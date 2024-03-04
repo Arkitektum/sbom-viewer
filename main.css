@@ -1,0 +1,160 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    padding: 0;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333435;
+}
+
+dl {
+    margin: 6px 0;
+    font-size: 1.2em;
+}
+dl dt,
+dl dd {
+    margin: 0;
+}
+dl dt {
+    display: inline;
+}
+dl dt::before {
+    display: block;
+    content: "";
+}
+dl dt::after {
+    display: inline;
+    content: " ";
+}
+dl dd {
+    font-weight: bold;
+    display: inline;
+}
+
+.hidden {
+    display: none;
+}
+
+.results-container:not(.hidden) {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.results-container .results-info {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.results-container .filter-container {
+    width: 300px;
+    min-width: 300px;
+    top: 20px;
+    position: sticky;
+    overflow: scroll;
+    height: 100vh;
+}
+
+.results-container .filter-container fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: none;
+    margin: 0;
+    padding: 6px;
+    background-color: #fff;
+}
+
+.results-container .filter-container fieldset legend:not(.hidden) {
+    display: contents;
+}
+
+.results-container .filter-container .field-container {
+    display: flex;
+}
+
+.results-container .filter-container .field-container:hover {
+    background-color: #f8f9fa;
+}
+
+.results-container .filter-container .field-container:not(:last-of-type) {
+    border-bottom: 1px solid #eee;
+}
+
+.results-container .filter-container .field-container input {
+    cursor: pointer;
+}
+
+.results-container .filter-container .field-container label {
+    margin-left: 3px;
+    cursor: pointer;
+    padding: 6px 0;
+    width: 100%;
+}
+
+.badge {
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-left: 6px;
+    background-color: #f0f2f4;
+    border-radius: 8px;
+    padding: 2px 6px;
+}
+
+.results-container .package-list {
+    background-color: #fff;
+    padding: 6px;
+    flex: 1;
+}
+
+.file-input-container:not(.hidden) {
+    border: 2px dashed #ddd;
+    border-radius: 20px;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    background-color: #fff;
+    transition: all 0.1s ease-in-out;
+    height: 96vh;
+    width: 96vw;
+    margin: 2vh 2vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.file-input-container.highlighted {
+    background-color: #eee;
+    border-color: #ccc;
+}
+
+.file-input-container .file-input-text {
+    border: none;
+    font-size: 3em;
+    margin: 0;
+}
+
+.file-input-container input {
+    display: none;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 0 20px;
+}
+
+ul li {
+    display: flex;
+    padding: 6px 6px;
+}
+
+ul li:not(:last-of-type) {
+    border-bottom: 1px solid #eee;
+}
