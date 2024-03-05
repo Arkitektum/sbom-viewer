@@ -214,3 +214,19 @@ document.addEventListener(
     },
     false
 );
+
+// Octokit.js
+// https://github.com/octokit/core.js#readme
+const octokit = new Octokit({
+  auth: 'YOUR-TOKEN'
+})
+
+await octokit.request('GET /repos/{owner}/{repo}/dependency-graph/sbom', {
+  owner: 'OWNER',
+  repo: 'REPO',
+  headers: {
+    'X-GitHub-Api-Version': '2022-11-28'
+  }
+})
+
+// https://docs.github.com/en/rest/dependency-graph/sboms?apiVersion=2022-11-28#export-a-software-bill-of-materials-sbom-for-a-repository
