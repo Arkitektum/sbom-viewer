@@ -16,7 +16,7 @@ function renderPackageList(packages, licenses) {
     packages.forEach((package) => {
         const packageLicense = getLicenseForPackage(package, licenses);
         const packageElement = document.createElement("li");
-        packageElement.textContent = package.name + " - " + package.licenseConcluded;
+        packageElement.textContent = package.name;
         packageElement.style.backgroundColor = packageLicense?.color;
 
         if (package?.versionInfo?.length) {
