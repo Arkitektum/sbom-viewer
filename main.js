@@ -7,15 +7,17 @@ const renderSbomInfo = (sbomData, licenses) => {
 
     packageNameElement.textContent = sbomData.name;
     packageCountElement.textContent = sbomData.packages.length;
-    uniqueLicensesElement.textContent = Object.keys(licenses).length;
+    uniqueLicensesElement.textContent = licenses.length;
 };
 
-function renderPackageList(packages) {
+function renderPackageList(packages, licenses) {
     const list = document.getElementById("package-list");
     list.innerHTML = "";
     packages.forEach((package) => {
+        const packageLicense = getLicenseForPackage(package, licenses);
         const packageElement = document.createElement("li");
-        packageElement.textContent = package.name;
+        packageElement.textContent = package.name + " - " + package.licenseConcluded;
+        packageElement.style.backgroundColor = packageLicense?.color;
 
         if (package?.versionInfo?.length) {
             const packageVersionElement = document.createElement("span");
@@ -30,27 +32,30 @@ function renderPackageList(packages) {
 
 function renderLicenseFilter(licenses) {
     const filterInputs = document.getElementById("license-filter-inputs");
-    Object.keys(licenses).forEach((licenseKey) => {
-        const licenseCount = licenses[licenseKey];
+    licenses.forEach((license) => {
+        const licenseCount = license.count;
         const fieldContainer = document.createElement("div");
         const checkboxInput = document.createElement("input");
         const checkboxLabel = document.createElement("label");
 
         fieldContainer.classList.add("field-container");
+        fieldContainer.style.backgroundColor = license.color;
 
         checkboxInput.name = "license";
-        checkboxInput.value = licenseKey;
+        checkboxInput.value = license.name;
         checkboxInput.type = "checkbox";
-        checkboxInput.id = licenseKey;
-        checkboxInput.addEventListener("change", handleLicenseFilterChange);
+        checkboxInput.id = license.name;
+        checkboxInput.addEventListener("change", function () {
+            handleLicenseFilterChange(licenses);
+        });
 
-        checkboxLabel.textContent = licenseKey;
+        checkboxLabel.textContent = license.name;
         const licenseCountElement = document.createElement("span");
         licenseCountElement.textContent = licenseCount;
         licenseCountElement.classList.add("badge");
 
         checkboxLabel.appendChild(licenseCountElement);
-        checkboxLabel.htmlFor = licenseKey;
+        checkboxLabel.htmlFor = license.name;
 
         fieldContainer.appendChild(checkboxInput);
         fieldContainer.appendChild(checkboxLabel);
@@ -58,29 +63,53 @@ function renderLicenseFilter(licenses) {
     });
 }
 
+function renderLicenseGraph(sbomData, licenses) {
+    const graphContainer = document.getElementById("license-graph");
+    const packageCount = sbomData.packages.length;
+    licenses.forEach((license) => {
+        const licenseCount = license.count;
+        const licensePercentage = (licenseCount / packageCount) * 100;
+        const licenseGraphElement = document.createElement("span");
+        licenseGraphElement.style.width = licensePercentage + "%";
+        licenseGraphElement.style.backgroundColor = license.color;
+        licenseGraphElement.classList.add("license-graph-element");
+        graphContainer.appendChild(licenseGraphElement);
+    });
+}
+
+function getLicenseForPackage(package, licenses) {
+    const packageLicense = package?.licenseConcluded?.length ? package.licenseConcluded : "No license";
+    return licenses.find((license) => license.name === packageLicense);
+}
+
 function getLicenses(packages) {
     const licenses = {};
     packages.forEach((package) => {
-        if (package?.licenseConcluded?.length) {
-            if (licenses?.[package?.licenseConcluded]) {
-                licenses[package.licenseConcluded] = licenses[package.licenseConcluded] + 1;
-            } else {
-                licenses[package.licenseConcluded] = 1;
-            }
+        const packageLicense = package?.licenseConcluded?.length ? package.licenseConcluded : "No license";
+        if (licenses?.[packageLicense]) {
+            licenses[packageLicense] = licenses[packageLicense] + 1;
+        } else {
+            licenses[packageLicense] = 1;
         }
     });
-    return licenses;
+    const licensesArray = Object.keys(licenses).map((key, index) => {
+        return { name: key, count: licenses[key], color: `hsl(${(index * 100) % 360}, 92%, 85%)` };
+    });
+    return licensesArray;
 }
 
-function handleLicenseFilterChange(event) {
+function handleLicenseFilterChange(licenses) {
     const checkedLicenses = Array.from(document.querySelectorAll("input[name=license]:checked")).map(
         (input) => input.value
     );
     if (checkedLicenses.length) {
-        const filteredPackages = sbomData.packages.filter((pkg) => checkedLicenses.includes(pkg.licenseConcluded));
-        renderPackageList(filteredPackages);
+        const filteredPackages = sbomData.packages.filter((pkg) => {
+            const packageLicense = pkg?.licenseConcluded?.length ? pkg.licenseConcluded : "No license";
+            return checkedLicenses.includes(packageLicense);
+        });
+        renderPackageList(filteredPackages, licenses);
     } else {
-        renderPackageList(sbomData.packages);
+        renderPackageList(sbomData.packages, licenses);
     }
 }
 
@@ -94,8 +123,9 @@ function onDragAndDropChange(files) {
             sbomData = JSON.parse(e.target.result);
             const licenses = getLicenses(sbomData.packages);
             renderSbomInfo(sbomData, licenses);
-            renderPackageList(sbomData.packages);
+            renderPackageList(sbomData.packages, licenses);
             renderLicenseFilter(licenses);
+            renderLicenseGraph(sbomData, licenses);
         };
         reader.readAsText(file);
     }

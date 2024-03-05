@@ -1,3 +1,10 @@
+:root {
+    --border-top-color: rgba(255, 255, 255, 0.2);
+    --border-bottom-color: rgba(0, 0, 0, 0.03);
+    --hover-filter: brightness(1.025);
+    --active-filter: brightness(1.05);
+}
+
 * {
     box-sizing: border-box;
 }
@@ -39,12 +46,22 @@ dl dd {
     display: none;
 }
 
+.badge {
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-left: 6px;
+    background-color: rgba(250, 252, 254, 0.58);
+    border-radius: 8px;
+    padding: 2px 6px;
+}
+
 .results-container:not(.hidden) {
     display: flex;
     flex-wrap: wrap;
     padding: 20px;
     max-width: 1100px;
     margin: auto;
+    text-wrap: balance;
 }
 
 .results-container .results-info {
@@ -52,23 +69,43 @@ dl dd {
     margin-bottom: 20px;
 }
 
+.results-container .results-info .license-graph {
+    padding: 0;
+}
+.results-container .results-info .license-graph .license-graph-element {
+    display: inline-block;
+    height: 18px;
+    margin: 0 0 -3px 0px;
+}
+
 .results-container .filter-container {
-    width: 300px;
-    min-width: 300px;
-    top: 20px;
-    position: sticky;
-    overflow: scroll;
-    height: 100vh;
+    width: 100%;
+}
+
+@media screen and (min-width: 660px) {
+    .results-container .filter-container {
+        width: 300px;
+        min-width: 300px;
+        top: 20px;
+        position: sticky;
+        overflow: scroll;
+        height: 100vh;
+    }
 }
 
 .results-container .filter-container fieldset {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
     border: none;
     margin: 0;
     padding: 6px;
     background-color: #fff;
+}
+
+@media screen and (min-width: 660px) {
+    .results-container .filter-container fieldset {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
 }
 
 .results-container .filter-container fieldset legend:not(.hidden) {
@@ -80,11 +117,19 @@ dl dd {
 }
 
 .results-container .filter-container .field-container:hover {
-    background-color: #f8f9fa;
+    filter: var(--hover-filter);
+}
+
+.results-container .filter-container .field-container:active {
+    filter: var(--active-filter);
 }
 
 .results-container .filter-container .field-container:not(:last-of-type) {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-bottom-color);
+}
+
+.results-container .filter-container .field-container:not(:first-of-type) {
+    border-top: 1px solid var(--border-top-color);
 }
 
 .results-container .filter-container .field-container input {
@@ -98,23 +143,45 @@ dl dd {
     width: 100%;
 }
 
-.badge {
-    font-size: 0.8em;
-    font-weight: bold;
-    margin-left: 6px;
-    background-color: #f0f2f4;
-    border-radius: 8px;
-    padding: 2px 6px;
+@media screen and (min-width: 660px) {
+    .results-container .package-list-container {
+        flex: 1;
+        max-width: calc(100% - 300px);
+    }
 }
 
-.results-container .package-list {
+.results-container .package-list-container ul.package-list {
     background-color: #fff;
     padding: 6px;
-    flex: 1;
+    list-style-type: none;
+    margin: 20px 0 0 0;
+}
+
+@media screen and (min-width: 660px) {
+    .results-container .package-list-container ul.package-list {
+        margin: 0 0 0 20px;
+    }
+}
+
+.results-container .package-list-container ul.package-list li {
+    display: flex;
+    padding: 6px 6px;
+}
+
+.results-container .package-list-container ul.package-list li:hover {
+    filter: var(--hover-filter);
+}
+
+.results-container .package-list-container ul.package-list li:not(:last-of-type) {
+    border-bottom: 1px solid var(--border-bottom-color);
+}
+
+.results-container .package-list-container ul.package-list li:not(:first-of-type) {
+    border-top: 1px solid var(--border-top-color);
 }
 
 .file-input-container:not(.hidden) {
-    border: 2px dashed #ddd;
+    border: 2px dashed #d2d4d6;
     border-radius: 20px;
     width: 100%;
     padding: 20px;
@@ -130,8 +197,8 @@ dl dd {
 }
 
 .file-input-container.highlighted {
-    background-color: #eee;
-    border-color: #ccc;
+    background-color: #e2e4e6;
+    border-color: #c2c4c6;
 }
 
 .file-input-container .file-input-text {
@@ -142,19 +209,4 @@ dl dd {
 
 .file-input-container input {
     display: none;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0 0 0 20px;
-}
-
-ul li {
-    display: flex;
-    padding: 6px 6px;
-}
-
-ul li:not(:last-of-type) {
-    border-bottom: 1px solid #eee;
 }
